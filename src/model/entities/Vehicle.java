@@ -5,17 +5,19 @@ import java.util.Objects;
 public abstract class Vehicle {
 
     private Integer id;
+    private Integer typeId;
     private String model;
     private String brand;
-    private Integer manufacturingYear;
+    private String manufacturingYear;
     private String engineHorsePower;
     private Category category;
 
     public Vehicle() {
     }
 
-    public Vehicle(Integer id, String model, String brand, Integer manufacturingYear,
+    public Vehicle(Integer id, Integer typeId, String model, String brand, String manufacturingYear,
                    String engineHorsePower, Category category) {
+        this.typeId = typeId;
         this.model = model;
         this.brand = brand;
         this.manufacturingYear = manufacturingYear;
@@ -29,6 +31,14 @@ public abstract class Vehicle {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
     public String getModel() {
@@ -47,11 +57,11 @@ public abstract class Vehicle {
         this.brand = brand;
     }
 
-    public Integer getManufacturingYear() {
+    public String getManufacturingYear() {
         return manufacturingYear;
     }
 
-    public void setManufacturingYear(Integer manufacturingYear) {
+    public void setManufacturingYear(String manufacturingYear) {
         this.manufacturingYear = manufacturingYear;
     }
 
@@ -88,11 +98,11 @@ public abstract class Vehicle {
     public String toString() {
         return "Vehicle{" +
                 "id=" + id +
+                ", typeId=" + typeId +
                 ", model='" + model + '\'' +
                 ", brand='" + brand + '\'' +
-                ", manufacturingYear=" + manufacturingYear +
+                ", manufacturingYear='" + manufacturingYear + '\'' +
                 ", engineHorsePower='" + engineHorsePower + '\'' +
-                ", category=" + category +
-                '}';
+                ", category=" + category;
     }
 }

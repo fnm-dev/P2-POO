@@ -1,16 +1,16 @@
 package model.dao;
 
 import model.entities.Category;
-import model.entities.Vehicle;
+import model.entities.ElectricVehicle;
 
 import java.util.List;
 
 public interface ElectricVehicleDao {
 
-    void insert(Vehicle obj);
-    void update(Vehicle obj);
+    void insert(ElectricVehicle obj);
+    void update(ElectricVehicle obj);
     void deleteById(Integer id);
-    Vehicle findById(Integer id);
-    List<Vehicle> findAll();
-    List<Vehicle> findByCategory(Category category);
+    ElectricVehicle findById(Integer id);
+    List<ElectricVehicle> findAll();
+    List<ElectricVehicle> findByCategory(Category category);
 }

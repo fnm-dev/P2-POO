@@ -5,11 +5,11 @@ public class GasolineVehicle extends Vehicle{
     private String fuelTankCapacity;
     private Integer numberOfEngineCylinders;
 
-    public GasolineVehicle(Integer id, String model, String brand, Integer manufacturingYear,
+    public GasolineVehicle(Integer id, Integer typeId, String model, String brand, String manufacturingYear,
                            String engineHorsePower, Category category, String fuelTankCapacity,
                            Integer numberOfEngineCylinders) {
 
-        super(id, model, brand, manufacturingYear, engineHorsePower, category);
+        super(id, typeId, model, brand, manufacturingYear, engineHorsePower, category);
         this.fuelTankCapacity = fuelTankCapacity;
         this.numberOfEngineCylinders = numberOfEngineCylinders;
     }
@@ -32,6 +32,6 @@ public class GasolineVehicle extends Vehicle{
 
     @Override
     public String toString() {
-        return super.toString() + " fuelTankCapacity = " + fuelTankCapacity + " numberOfEngineCylinders = " + numberOfEngineCylinders;
+        return super.toString() + " fuelTankCapacity = " + fuelTankCapacity + " numberOfEngineCylinders = " + numberOfEngineCylinders + '}';
     }
 }

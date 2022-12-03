@@ -5,13 +5,16 @@ public class ElectricVehicle extends Vehicle{
     private String batteryCapacity;
     private Integer numberOfBatteries;
 
-    public ElectricVehicle(Integer id, String model, String brand, Integer manufacturingYear,
+    public ElectricVehicle(Integer id, Integer typeId, String model, String brand, String manufacturingYear,
                            String engineHorsePower, Category category, String batteryCapacity,
                            Integer numberOfBatteries) {
 
-        super(id, model, brand, manufacturingYear, engineHorsePower, category);
+        super(id, typeId, model, brand, manufacturingYear, engineHorsePower, category);
         this.batteryCapacity = batteryCapacity;
         this.numberOfBatteries = numberOfBatteries;
+    }
+
+    public ElectricVehicle() {
     }
 
     public String getBatteryCapacity() {
@@ -32,7 +35,7 @@ public class ElectricVehicle extends Vehicle{
 
     @Override
     public String toString() {
-        return super.toString() + "batteryCapacity = " + batteryCapacity +
-                "numberOfBatteries = " + numberOfBatteries;
+        return super.toString() + " batteryCapacity = " + batteryCapacity +
+                " numberOfBatteries = " + numberOfBatteries + '}';
     }
 }
