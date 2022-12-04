@@ -14,6 +14,9 @@ public class GasolineVehicle extends Vehicle{
         this.numberOfEngineCylinders = numberOfEngineCylinders;
     }
 
+    public GasolineVehicle() {
+    }
+
     public String getFuelTankCapacity() {
         return fuelTankCapacity;
     }

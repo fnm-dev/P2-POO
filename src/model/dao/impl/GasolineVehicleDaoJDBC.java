@@ -1,10 +1,13 @@
 package model.dao.impl;
 
+import com.mysql.cj.protocol.Resultset;
 import db.DB;
 import db.DbException;
-import model.dao.ElectricVehicleDao;
+import model.dao.GasolineVehicleDao;
 import model.entities.Category;
 import model.entities.ElectricVehicle;
+import model.entities.GasolineVehicle;
+import model.entities.Vehicle;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,16 +15,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
+public class GasolineVehicleDaoJDBC implements GasolineVehicleDao {
 
     private Connection conn;
 
-    public ElectricVehicleDaoJDBC(Connection conn){
+    public GasolineVehicleDaoJDBC(Connection conn) {
         this.conn = conn;
     }
 
     @Override
-    public void insert(ElectricVehicle ev) {
+    public void insert(GasolineVehicle gv) {
         PreparedStatement st = null;
         try {
             st = conn.prepareStatement(
@@ -30,12 +33,12 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
                     Statement.RETURN_GENERATED_KEYS
             );
 
-            st.setInt(1, ev.getTypeId());
-            st.setInt(2, ev.getCategory().getId());
-            st.setString(3, ev.getModel());
-            st.setString(4, ev.getBrand());
-            st.setString(5, ev.getManufacturingYear());
-            st.setString(6, ev.getEngineHorsePower());
+            st.setInt(1, gv.getTypeId());
+            st.setInt(2, gv.getCategory().getId());
+            st.setString(3, gv.getModel());
+            st.setString(4, gv.getBrand());
+            st.setString(5, gv.getManufacturingYear());
+            st.setString(6, gv.getEngineHorsePower());
 
             int rowsAffected = st.executeUpdate();
 
@@ -43,7 +46,7 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
                 ResultSet rs = st.getGeneratedKeys();
                 if(rs.next()){
                     int id = rs.getInt(1);
-                    ev.setId(id);
+                    gv.setId(id);
                 }
                 DB.closeResultSet(rs);
             } else{
@@ -51,13 +54,13 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
             }
 
             st = conn.prepareStatement(
-                    "INSERT INTO GasolineVehicle (Id, Battery_Capacity, Number_of_Batteries) VALUE " +
+                    "INSERT INTO GasolineVehicle (Id, Fuel_Tank_Capacity, Number_of_Cylinders) VALUE " +
                             "(?, ?, ?)"
             );
 
-            st.setInt(1, ev.getId());
-            st.setString(2, ev.getBatteryCapacity());
-            st.setInt(3, ev.getNumberOfBatteries());
+            st.setInt(1, gv.getId());
+            st.setString(2, gv.getFuelTankCapacity());
+            st.setInt(3, gv.getNumberOfEngineCylinders());
 
             st.executeUpdate();
 
@@ -69,7 +72,7 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
     }
 
     @Override
-    public void update(ElectricVehicle ev) {
+    public void update(GasolineVehicle gv) {
         PreparedStatement st = null;
         try {
             st = conn.prepareStatement(
@@ -78,24 +81,24 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
                             "WHERE Id = ?"
             );
 
-            st.setString(1, ev.getModel());
-            st.setString(2, ev.getBrand());
-            st.setString(3, ev.getManufacturingYear());
-            st.setString(4, ev.getEngineHorsePower());
-            st.setInt(5, ev.getCategory().getId());
-            st.setInt(6, ev.getId());
+            st.setString(1, gv.getModel());
+            st.setString(2, gv.getBrand());
+            st.setString(3, gv.getManufacturingYear());
+            st.setString(4, gv.getEngineHorsePower());
+            st.setInt(5, gv.getCategory().getId());
+            st.setInt(6, gv.getId());
 
             st.executeUpdate();
 
             st = conn.prepareStatement(
-                    "UPDATE ElectricVehicle " +
-                            "SET Battery_Capacity = ?, Number_of_Batteries = ? " +
+                    "UPDATE GasolineVehicle " +
+                            "SET Fuel_Tank_Capacity = ?, Number_of_Cylinders = ? " +
                             "WHERE Id = ?"
             );
 
-            st.setString(1, ev.getBatteryCapacity());
-            st.setInt(2, ev.getNumberOfBatteries());
-            st.setInt(3, ev.getId());
+            st.setString(1, gv.getFuelTankCapacity());
+            st.setInt(2, gv.getNumberOfEngineCylinders());
+            st.setInt(3, gv.getId());
 
             st.executeUpdate();
 
@@ -127,15 +130,15 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
     }
 
     @Override
-    public ElectricVehicle findById(Integer id) {
+    public GasolineVehicle findById(Integer id) {
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
             st = conn.prepareStatement(
                     "SELECT V.Id, V.Type_Id, V.Category_Id, C.Name AS Category_Name, V.Model, V.Brand, V.Manufacturing_Year, V.Engine_Horsepower, " +
-                            "EV.Battery_Capacity, EV.Number_of_Batteries " +
-                            "FROM ElectricVehicle EV INNER JOIN Vehicle V " +
-                            "ON EV.Id = V.Id INNER JOIN Category C " +
+                            "GV.Fuel_Tank_Capacity, GV.Number_of_Cylinders " +
+                            "FROM GasolineVehicle GV INNER JOIN Vehicle V " +
+                            "ON GV.Id = V.Id INNER JOIN Category C " +
                             "ON V.Category_Id = C.Id " +
                             "WHERE V.Id = ?"
             );
@@ -144,8 +147,8 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
             rs = st.executeQuery();
             if(rs.next()){
                 Category cat = instantiateCategory(rs);
-                ElectricVehicle ev = instantiateElectricVehicle(rs, cat);
-                return ev;
+                GasolineVehicle gv = instantiateGasolineVehicle(rs, cat);
+                return gv;
             }
             return null;
         } catch (SQLException e) {
@@ -157,22 +160,22 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
     }
 
     @Override
-    public List<ElectricVehicle> findAll() {
+    public List<GasolineVehicle> findAll() {
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
             st = conn.prepareStatement(
                     "SELECT V.Id, V.Type_Id, V.Category_Id, C.Name AS Category_Name, V.Model, V.Brand, V.Manufacturing_Year, V.Engine_Horsepower, " +
-                            "EV.Battery_Capacity, EV.Number_of_Batteries " +
-                            "FROM ElectricVehicle EV INNER JOIN Vehicle V " +
-                            "ON EV.Id = V.Id INNER JOIN Category C " +
+                            "GV.Fuel_Tank_Capacity, GV.Number_of_Cylinders " +
+                            "FROM GasolineVehicle GV INNER JOIN Vehicle V " +
+                            "ON GV.Id = V.Id INNER JOIN Category C " +
                             "ON V.Category_Id = C.Id " +
                             "ORDER BY Model"
             );
 
             rs = st.executeQuery();
 
-            List<ElectricVehicle> list = new ArrayList<>();
+            List<GasolineVehicle> list = new ArrayList<>();
             Map<Integer, Category> map = new HashMap<>();
 
             while (rs.next()){
@@ -182,8 +185,8 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
                     map.put(rs.getInt("Category_Id"), cat);
                 }
 
-                ElectricVehicle ev = instantiateElectricVehicle(rs, cat);
-                list.add(ev);
+                GasolineVehicle gv = instantiateGasolineVehicle(rs, cat);
+                list.add(gv);
             }
             return list;
         } catch (SQLException e) {
@@ -195,15 +198,15 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
     }
 
     @Override
-    public List<ElectricVehicle> findByCategory(Category category) {
+    public List<GasolineVehicle> findByCategory(Category category) {
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
             st = conn.prepareStatement(
                     "SELECT V.Id, V.Type_Id, V.Category_Id, C.Name AS Category_Name, V.Model, V.Brand, V.Manufacturing_Year, V.Engine_Horsepower, " +
-                            "EV.Battery_Capacity, EV.Number_of_Batteries " +
-                            "FROM ElectricVehicle EV INNER JOIN Vehicle V " +
-                            "ON EV.Id = V.Id INNER JOIN Category C " +
+                            "GV.Fuel_Tank_Capacity, GV.Number_of_Cylinders " +
+                            "FROM GasolineVehicle GV INNER JOIN Vehicle V " +
+                            "ON GV.Id = V.Id INNER JOIN Category C " +
                             "ON V.Category_Id = C.Id " +
                             "WHERE Category_Id = ? " +
                             "ORDER BY Model"
@@ -213,7 +216,7 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
 
             rs = st.executeQuery();
 
-            List<ElectricVehicle> list = new ArrayList<>();
+            List<GasolineVehicle> list = new ArrayList<>();
             Map<Integer, Category> map = new HashMap<>();
 
             while (rs.next()) {
@@ -223,8 +226,8 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
                     map.put(rs.getInt("Category_Id"), cat);
                 }
 
-                ElectricVehicle ev = instantiateElectricVehicle(rs, cat);
-                list.add(ev);
+                GasolineVehicle gv = instantiateGasolineVehicle(rs, cat);
+                list.add(gv);
             }
             return list;
         } catch (SQLException e) {
@@ -235,18 +238,18 @@ public class ElectricVehicleDaoJDBC implements ElectricVehicleDao {
         }
     }
 
-    private ElectricVehicle instantiateElectricVehicle(ResultSet rs, Category cat) throws SQLException {
-        ElectricVehicle ev = new ElectricVehicle();
-        ev.setId(rs.getInt("Id"));
-        ev.setTypeId(rs.getInt("Type_Id"));
-        ev.setModel(rs.getString("Model"));
-        ev.setBrand(rs.getString("Brand"));
-        ev.setManufacturingYear(rs.getString("Manufacturing_Year"));
-        ev.setEngineHorsePower(rs.getString("Engine_Horsepower"));
-        ev.setBatteryCapacity(rs.getString("Battery_Capacity"));
-        ev.setNumberOfBatteries(rs.getInt("Number_of_Batteries"));
-        ev.setCategory(cat);
-        return ev;
+    private GasolineVehicle instantiateGasolineVehicle(ResultSet rs, Category cat) throws SQLException {
+        GasolineVehicle gv = new GasolineVehicle();
+        gv.setId(rs.getInt("Id"));
+        gv.setTypeId(rs.getInt("Type_Id"));
+        gv.setModel(rs.getString("Model"));
+        gv.setBrand(rs.getString("Brand"));
+        gv.setManufacturingYear(rs.getString("Manufacturing_Year"));
+        gv.setEngineHorsePower(rs.getString("Engine_Horsepower"));
+        gv.setFuelTankCapacity(rs.getString("Fuel_Tank_Capacity"));
+        gv.setNumberOfEngineCylinders(rs.getInt("Number_of_Cylinders"));
+        gv.setCategory(cat);
+        return gv;
     }
 
     private Category instantiateCategory(ResultSet rs) throws SQLException {
