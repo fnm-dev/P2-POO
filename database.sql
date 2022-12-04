@@ -60,6 +60,16 @@ START TRANSACTION;
     (1, 3, 'Model S', 'Tesla', '2021', '670hp');
 	INSERT INTO ElectricVehicle (Id, Battery_Capacity, Number_of_Batteries) VALUE
     (LAST_INSERT_ID(), '103kWh', 1);
+    
+    INSERT INTO Vehicle (Type_Id, Category_Id, Model, Brand, Manufacturing_Year, Engine_Horsepower) VALUE
+    (1, 1, 'Kwid E-Tech', 'Renault', '2022', '65hp');
+	INSERT INTO ElectricVehicle (Id, Battery_Capacity, Number_of_Batteries) VALUE
+    (LAST_INSERT_ID(), '27kWh', 1);
+    
+    INSERT INTO Vehicle (Type_Id, Category_Id, Model, Brand, Manufacturing_Year, Engine_Horsepower) VALUE
+    (1, 1, 'Bolt', 'Chevrolet', '2023', '203hp');
+	INSERT INTO ElectricVehicle (Id, Battery_Capacity, Number_of_Batteries) VALUE
+    (LAST_INSERT_ID(), '66kWh', 1);
 COMMIT;
 
 START TRANSACTION;
@@ -67,7 +77,14 @@ START TRANSACTION;
     (2, 2, 'Ecosport', 'Ford', '2017', '115hp');
 	INSERT INTO GasolineVehicle (Id, Fuel_Tank_Capacity, Number_of_Cylinders) VALUE
     (LAST_INSERT_ID(), '52L', 4);
+    
+    INSERT INTO Vehicle (Type_Id, Category_Id, Model, Brand, Manufacturing_Year, Engine_Horsepower) VALUE
+    (2, 4, '458 Italia', 'Ferrari', '2015', '578hp');
+	INSERT INTO GasolineVehicle (Id, Fuel_Tank_Capacity, Number_of_Cylinders) VALUE
+    (LAST_INSERT_ID(), '95L', 8);
+    
+    INSERT INTO Vehicle (Type_Id, Category_Id, Model, Brand, Manufacturing_Year, Engine_Horsepower) VALUE
+    (2, 1, 'Up Connect TSi', 'Volkswagen', '2020', '105hp');
+	INSERT INTO GasolineVehicle (Id, Fuel_Tank_Capacity, Number_of_Cylinders) VALUE
+    (LAST_INSERT_ID(), '50L', 3);
 COMMIT;
-
-
-
